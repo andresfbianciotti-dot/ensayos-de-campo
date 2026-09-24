@@ -65,7 +65,7 @@ function anovaRCBD(tr,variable){
  const bm=Array.from({length:r},(_,j)=>{let a=0;for(let i=0;i<t;i++)a+=groups[i][j].v;return a/t});
  let sst=0,sstr=0,ssb=0;all.forEach(x=>sstr+=0);for(let i=0;i<t;i++)sstr+=r*(tm[i]-mean)**2;for(let j=0;j<r;j++)ssb+=t*(bm[j]-mean)**2;all.forEach(x=>sst+=(x.v-mean)**2);const sse=Math.max(0,sst-sstr-ssb);const dft=t-1,dfb=r-1,dfe=(t-1)*(r-1);const mse=sse/dfe;const ft=(sstr/dft)/mse,fb=(ssb/dfb)/mse;const lsd=studentTCritical(dfe,.05)*Math.sqrt(2*mse/r);const cv=mean!==0?Math.sqrt(mse)/Math.abs(mean)*100:NaN;
  // Fisher LSD compact letters, greedy by descending mean
- const order=tm.map((m,i)=>({i,m})).sort((a,b)=>b.m-a.m);const letters=Array(t).fill('');let sets=[];for(const o of order){let placed=false;for(let k=0;k<sets.length;k++){const set=sets[k];if(set.every(j=>Math.abs(tm[o.i]-tm[j])<=lsd+1e-12)){set.push(o.i);placed=true;break}}if(!placed)sets.push([o.i])}sets.forEach((set,k)=>set.forEach(i=>letters[i]+=String.fromCharCode(65+k)));return {ok:true,t,r,mean,tm,bm,sst,sstr,ssb,sse,dft,dfb,dfe,mse,ft,fb,lsd,cv,letters,significant:ft>studentTCritical(dfe,.05)**2};
+ const order=tm.map((m,i)=>({i,m})).sort((a,b)=>b.m-a.m);const letters=Array(t).fill('');let sets=[];for(const o of order){let placed=false;for(let k=0;k<sets.length;k++){const set=sets[k];if(set.every(j=>Math.abs(tm[o.i]-tm[j])<=lsd+1e-12)){set.push(o.i);placed=true;break}}if(!placed)sets.push([o.i])}sets.forEach((set,k)=>set.forEach(i=>letters[i]+=String.fromCharCode(65+k)));return {ok:true,t,r,mean,tm,bm,groups,sst,sstr,ssb,sse,dft,dfb,dfe,mse,ft,fb,lsd,cv,letters,significant:ft>studentTCritical(dfe,.05)**2};
 }
 function variableIsNumeric(v){return ['number','percent','scale'].includes(v.type)}
 function showResults(id){
